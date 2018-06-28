@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 	"unicode"
 )
@@ -39,4 +40,25 @@ func GetToWhiteSpace(line []byte, index int) (response string, count int) {
 	}
 
 	return response, count
+}
+
+// PrintTree d
+func PrintTree(tree Root) {
+	printTree(tree.value)
+}
+
+func printTree(tree *Tree) {
+	if tree == nil {
+		return
+	}
+
+	if tree.left != nil {
+		printTree(tree.left)
+	}
+
+	if tree.right != nil {
+		printTree(tree.right)
+	}
+
+	fmt.Println(" " + tree.value.value)
 }

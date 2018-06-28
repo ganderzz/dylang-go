@@ -11,10 +11,14 @@ const (
 	Assignment tokenType = 2
 	// Number token
 	Number tokenType = 3
+	// End token
+	End tokenType = 4
+	// Program token
+	Program tokenType = 5
 )
 
 // Token token
 type Token struct {
-	token     string
+	value     string
 	tokenType tokenType
 }

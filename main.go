@@ -28,8 +28,11 @@ func main() {
 			n, err := file.Read(buf)
 
 			if n > 0 {
-				s := ParseLine(buf)
-				fmt.Println(s)
+				s := Tokenize(buf)
+				p := Parse(s)
+				g := Generate(p)
+
+				fmt.Println(g)
 			} else if err == io.EOF {
 				break
 			} else if err != nil {
