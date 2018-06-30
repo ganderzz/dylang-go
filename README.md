@@ -9,3 +9,6 @@ Currently supports:
     - Numbers
     - Assignment
     - "let" keyword 
+  - Parsing
+  - Generating to valid javascript 
+    - `let apples = 42` -> `(function() {var apples=42})()`
