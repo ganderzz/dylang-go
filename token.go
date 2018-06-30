@@ -3,6 +3,8 @@ package main
 type tokenType int
 
 const (
+	// Empty nothing
+	Empty tokenType = -1
 	// Variable token
 	Variable tokenType = 0
 	// Identifier token

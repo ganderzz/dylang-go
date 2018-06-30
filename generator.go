@@ -1,31 +1,26 @@
 package main
 
 // Generate g
-func Generate(root Root) string {
-	code := "(function() {"
-	base := root.value
-	PrintTree(root)
-
-	code = code + parseTreeToCode(base)
-
-	return code + "})()"
+func Generate(root *Root) string {
+	return "(function() {" + parseTreeToCode(root.value) + "})()"
 }
 
 func parseTreeToCode(tree *Tree) string {
-	stringBuilder := ""
+	left := ""
+	right := ""
 
 	if tree == nil {
-		return stringBuilder
+		return ""
 	}
 
 	if tree.left != nil {
-		stringBuilder += parseTreeToCode(tree.left)
+		left = parseTreeToCode(tree.left)
 	}
 	if tree.right != nil {
-		stringBuilder += parseTreeToCode(tree.left)
+		right = parseTreeToCode(tree.right)
 	}
 
-	return stringBuilder + getCode(tree.value)
+	return left + getCode(tree.value) + right
 }
 
 func getCode(token Token) string {

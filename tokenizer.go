@@ -19,24 +19,22 @@ func Tokenize(line []byte) []Token {
 		}
 
 		if Matches(currentByte, "l") && Matches(line[index+1], "e") && Matches(line[index+2], "t") {
-			tokens.add(Token{value: "let", tokenType: Variable})
+			tokens = tokens.add(Token{value: "let", tokenType: Variable})
 			index += 2
 		} else if IsLetter(currentByte) {
 			token, total := GetToWhiteSpace(line, index)
 			index += total
 
-			tokens.add(Token{value: token, tokenType: Identifier})
+			tokens = tokens.add(Token{value: token, tokenType: Identifier})
 		} else if Matches(currentByte, "=") {
-			tokens.add(Token{value: "=", tokenType: Assignment})
+			tokens = tokens.add(Token{value: "=", tokenType: Assignment})
 		} else if IsNumber(currentByte) {
 			token, total := GetToWhiteSpace(line, index)
 			index += total
 
-			tokens.add(Token{value: token, tokenType: Number})
+			tokens = tokens.add(Token{value: token, tokenType: Number})
 		}
 	}
-
-	//tokens = append(tokens, Token{value: "END", tokenType: End})
 
 	return tokens
 }

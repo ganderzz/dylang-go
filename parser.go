@@ -14,8 +14,8 @@ type Tree struct {
 }
 
 // Parse parses a list of tokens into an ast
-func Parse(tokens []Token) Root {
-	root := Root{name: "Program", value: parse(tokens)}
+func Parse(tokens []Token) *Root {
+	root := &Root{name: "Program", value: parse(tokens)}
 
 	return root
 }
@@ -25,13 +25,15 @@ func parse(tokens []Token) *Tree {
 		value := tokens[i]
 
 		if value.tokenType == Variable {
-			left := &Tree{
-				left: &Tree{
-					value: tokens[i]},
-				right: &Tree{
-					value: tokens[i+1]}}
+			name := &Tree{value: tokens[i]}
+			value := &Tree{value: tokens[i+1]}
 
-			r := &Tree{value: tokens[i+2], left: left, right: parse(tokens[i+2:])}
+			variable := &Tree{
+				value: Token{tokenType: Empty, value: ""},
+				left:  name,
+				right: value}
+
+			r := &Tree{value: tokens[i+2], left: variable, right: parse(tokens[i+3:])}
 			i = i + 2
 
 			return r
