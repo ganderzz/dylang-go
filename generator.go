@@ -2,7 +2,18 @@ package main
 
 // Generate g
 func Generate(root *Root) string {
-	return "(function() {" + parseTreeToCode(root.value) + "})()"
+	return "(function() {" + getBody(root) + "})()"
+}
+
+func getBody(root *Root) string {
+	value := root.value
+	str := ""
+
+	for i := 0; i < len(value); i++ {
+		str = str + parseTreeToCode(value[i])
+	}
+
+	return str
 }
 
 func parseTreeToCode(tree *Tree) string {
@@ -33,6 +44,8 @@ func getCode(token Token) string {
 		return "="
 	case Number:
 		return token.value
+	case End:
+		return ";"
 	}
 
 	return ""

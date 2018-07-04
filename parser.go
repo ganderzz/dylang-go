@@ -3,7 +3,7 @@ package main
 // Root t
 type Root struct {
 	name  string
-	value *Tree
+	value []*Tree
 }
 
 // Tree t
@@ -15,12 +15,20 @@ type Tree struct {
 
 // Parse parses a list of tokens into an ast
 func Parse(tokens []Token) *Root {
-	root := &Root{name: "Program", value: parse(tokens)}
+	tree := []*Tree{}
+
+	for i := 0; i < len(tokens); i++ {
+		val, index := parse(tokens[i:])
+		tree = append(tree, val)
+		i += index
+	}
+
+	root := &Root{name: "Program", value: tree}
 
 	return root
 }
 
-func parse(tokens []Token) *Tree {
+func parse(tokens []Token) (tree *Tree, index int) {
 	for i := 0; i < len(tokens); i++ {
 		value := tokens[i]
 
@@ -32,15 +40,17 @@ func parse(tokens []Token) *Tree {
 				value: Token{tokenType: Empty, value: ""},
 				left:  name,
 				right: value}
+			right, _ := parse(tokens[i+3:])
 
-			r := &Tree{value: tokens[i+2], left: variable, right: parse(tokens[i+3:])}
-			i = i + 2
+			r := &Tree{value: tokens[i+2], left: variable, right: right}
 
-			return r
+			return r, i + 3
 		} else if value.tokenType == Number {
-			return &Tree{value: tokens[i]}
+			return &Tree{value: tokens[i]}, i
+		} else if value.tokenType == End {
+			return &Tree{value: tokens[i]}, i
 		}
 	}
 
-	return &Tree{}
+	return &Tree{}, len(tokens)
 }

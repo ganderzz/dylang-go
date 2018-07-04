@@ -6,26 +6,27 @@ func (t tokenList) add(value Token) tokenList {
 	return append(t, value)
 }
 
+func (t tokenList) lookAhead(loc int) Token {
+	return t[loc]
+}
+
 // Tokenize parses the line
-func Tokenize(line []byte) []Token {
+func Tokenize(line []string) []Token {
 	tokens := tokenList{}
 
 	for index := 0; index < len(line); index++ {
 		currentByte := line[index]
 
 		// Ignore whitespace
-		if currentByte == 0 || Matches(currentByte, " ") || Matches(currentByte, "\n") {
+		if Matches(currentByte, " ") {
 			continue
 		}
 
-		if Matches(currentByte, "l") && Matches(line[index+1], "e") && Matches(line[index+2], "t") {
-			tokens = tokens.add(Token{value: "let", tokenType: Variable})
-			index += 2
-		} else if IsLetter(currentByte) {
-			token, total := GetToWhiteSpace(line, index)
-			index += total
+		word, wordCount := GetToWhiteSpace(line, index)
 
-			tokens = tokens.add(Token{value: token, tokenType: Identifier})
+		if word == "let" {
+			tokens = tokens.add(Token{value: "let", tokenType: Variable})
+			index += wordCount
 		} else if Matches(currentByte, "=") {
 			tokens = tokens.add(Token{value: "=", tokenType: Assignment})
 		} else if IsNumber(currentByte) {
@@ -33,8 +34,15 @@ func Tokenize(line []byte) []Token {
 			index += total
 
 			tokens = tokens.add(Token{value: token, tokenType: Number})
+		} else {
+			token, total := GetToWhiteSpace(line, index)
+			index += total
+
+			tokens = tokens.add(Token{value: token, tokenType: Identifier})
 		}
 	}
+
+	tokens = tokens.add(Token{value: "", tokenType: End})
 
 	return tokens
 }

@@ -1,44 +1,49 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"io"
 	"log"
 	"os"
-)
-
-const (
-	bufferSize = 1024
+	"strings"
 )
 
 func main() {
-	args := os.Args[1:]
+	args := os.Args
+	if len(args) <= 1 {
+		fmt.Println("Invalid arguments, requires path to dylang file")
+		return
+	}
 
-	if args[0] != "" {
-		file, err := os.Open(args[0])
+	filePath := args[1]
+
+	if filePath != "" {
+		file, err := os.Open(filePath)
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		defer file.Close()
 
-		buf := make([]byte, bufferSize)
+		scanner := bufio.NewScanner(file)
+		tokens := []Token{}
 
-		for {
-			n, err := file.Read(buf)
+		for scanner.Scan() {
+			line := scanner.Text()
+			split := strings.Split(line, "")
 
-			if n > 0 {
-				s := Tokenize(buf)
-				p := Parse(s)
-				g := Generate(p)
-
-				fmt.Println(g)
-			} else if err == io.EOF {
-				break
-			} else if err != nil {
-				log.Panic(err)
-				break
+			if len(split) > 0 {
+				tokens = append(tokens, Tokenize(split)...)
 			}
 		}
+
+		if err := scanner.Err(); err != nil {
+			log.Fatal(err)
+		}
+
+		ast := Parse(tokens)
+		generatedCode := Generate(ast)
+
+		fmt.Println(generatedCode)
 	}
 }
