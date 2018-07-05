@@ -28,7 +28,7 @@ func Parse(tokens []Token) *Root {
 	return root
 }
 
-func parse(tokens []Token) (tree *Tree, index int) {
+func parse(tokens TokenList) (tree *Tree, index int) {
 	for i := 0; i < len(tokens); i++ {
 		value := tokens[i]
 
@@ -47,6 +47,14 @@ func parse(tokens []Token) (tree *Tree, index int) {
 			return r, i + 3
 		} else if value.tokenType == Number {
 			return &Tree{value: tokens[i]}, i
+		} else if value.tokenType == LeftParen {
+			_, pos := tokens.Find(")")
+
+			// Found a match
+			if pos > -1 {
+
+				return &Tree{value: tokens[i]}, i
+			}
 		} else if value.tokenType == End {
 			return &Tree{value: tokens[i]}, i
 		}

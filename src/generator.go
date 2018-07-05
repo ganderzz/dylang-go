@@ -46,6 +46,8 @@ func getCode(token Token) string {
 		return token.value
 	case End:
 		return ";"
+	case LeftParen:
+		return "("
 	}
 
 	return ""
