@@ -29,6 +29,8 @@ const (
 	OpenBrace tokenType = 10
 	// CloseBrace token
 	CloseBrace tokenType = 11
+	// Function token
+	Function tokenType = 12
 )
 
 // Token token

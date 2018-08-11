@@ -6,11 +6,23 @@ type Root struct {
 	value []*Tree
 }
 
-// Tree t
+type tokenList = []Token
+
+// Tree tree type
 type Tree struct {
-	value Token
+	value interface{}
 	left  *Tree
 	right *Tree
+}
+
+func skipTo(tokens []Token, i int, item string) int {
+	for i := 0; i < len(tokens); i++ {
+		if tokens[i].value == item {
+			return i
+		}
+	}
+
+	return -1
 }
 
 // Parse parses a list of tokens into an ast
@@ -47,13 +59,18 @@ func parse(tokens TokenList) (tree *Tree, index int) {
 			return r, i + 3
 		} else if value.tokenType == Number {
 			return &Tree{value: tokens[i]}, i
-		} else if value.tokenType == LeftParen {
-			_, pos := tokens.Find(")")
+		} else if value.tokenType == Identifier {
+			_, posStart := tokens.Find("(")
+			_, posEnd := tokens.Find(")")
+			_, braceStart := tokens.Find("{")
 
 			// Found a match
-			if pos > -1 {
+			if posStart > -1 && posEnd > -1 && braceStart > -1 {
+				fncToken := Token{tokenType: Function, value: tokens[i].value}
+				end := skipTo(tokens, i, "}")
+				start := skipTo(tokens, i, "{") + 2
 
-				return &Tree{value: tokens[i]}, i
+				return &Tree{value: fncToken, right: &Tree{value: tokens[start:end]}}, i
 			}
 		} else if value.tokenType == End {
 			return &Tree{value: tokens[i]}, i

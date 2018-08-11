@@ -18,19 +18,19 @@ func IsNumber(b string) bool {
 	return false
 }
 
-// GetToWhiteSpace grabs the current string until whitespace
-func GetToWhiteSpace(line []string, index int) (response string, count int) {
+// GetToBreak grabs the current string until whitespace
+func GetToBreak(line []string, index int) (response string, count int) {
 	start := line[index:]
 
 	for _, item := range start {
 		val := item
 
-		if val == " " || val == "\n" {
+		if val == " " || val == "\n" || val == "(" {
 			break
 		}
 		response += val
 		count++
 	}
 
-	return response, count
+	return response, count - 1
 }

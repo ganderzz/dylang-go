@@ -12,7 +12,7 @@ func Tokenize(line []string) TokenList {
 			continue
 		}
 
-		word, wordCount := GetToWhiteSpace(line, index)
+		word, wordCount := GetToBreak(line, index)
 
 		if word == "let" {
 			tokens = tokens.Add(Token{value: "let", tokenType: Variable})
@@ -20,7 +20,7 @@ func Tokenize(line []string) TokenList {
 		} else if Matches(currentByte, "=") {
 			tokens = tokens.Add(Token{value: "=", tokenType: Assignment})
 		} else if IsNumber(currentByte) {
-			token, total := GetToWhiteSpace(line, index)
+			token, total := GetToBreak(line, index)
 			index += total
 
 			tokens = tokens.Add(Token{value: token, tokenType: Number})
@@ -35,7 +35,7 @@ func Tokenize(line []string) TokenList {
 		} else if Matches(currentByte, "}") {
 			tokens = tokens.Add(Token{value: currentByte, tokenType: CloseBrace})
 		} else {
-			token, total := GetToWhiteSpace(line, index)
+			token, total := GetToBreak(line, index)
 			index += total
 
 			tokens = tokens.Add(Token{value: token, tokenType: Identifier})

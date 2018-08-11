@@ -34,7 +34,25 @@ func parseTreeToCode(tree *Tree) string {
 	return left + getCode(tree.value) + right
 }
 
-func getCode(token Token) string {
+func getCode(token interface{}) string {
+	switch token.(type) {
+	case Token:
+		return parseToken(token.(Token))
+
+	case TokenList:
+		item := token.(TokenList)
+		val := ""
+		for i := 0; i < len(item); i++ {
+			val += parseToken(item[i])
+		}
+
+		return val
+	}
+
+	return ""
+}
+
+func parseToken(token Token) string {
 	switch token.tokenType {
 	case Variable:
 		return "var "
@@ -48,6 +66,8 @@ func getCode(token Token) string {
 		return ";"
 	case LeftParen:
 		return "("
+	case Function:
+		return "function " + token.value + "() {"
 	}
 
 	return ""
